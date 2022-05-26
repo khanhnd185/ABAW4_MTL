@@ -111,14 +111,14 @@ def main(conf):
                 'state_dict': net.state_dict(),
                 'optimizer': optimizer.state_dict(),
             }
-            torch.save(checkpoint, os.path.join(conf['outdir'], 'epoch' + str(epoch + 1) + '_model_fold' + str(conf.fold) + '.pth'))
+            torch.save(checkpoint, os.path.join(conf['outdir'], 'epoch' + str(epoch + 1) + '.pth'))
 
         checkpoint = {
             'epoch': epoch,
             'state_dict': net.state_dict(),
             'optimizer': optimizer.state_dict(),
         }
-        torch.save(checkpoint, os.path.join(conf['outdir'], 'cur_model_fold.pth'))
+        torch.save(checkpoint, os.path.join(conf['outdir'], 'cur_model.pth'))
 
 
 if __name__=="__main__":

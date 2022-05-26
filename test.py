@@ -13,14 +13,8 @@ from conf import get_config,set_logger,set_outdir,set_env
 
 def get_dataloader(conf):
     print('==> Preparing data...')
-    if conf.dataset == 'BP4D':
-        valset = BP4D(conf.dataset_path, train=False, fold=conf.fold, transform=image_test(crop_size=conf.crop_size), stage = 2)
-        val_loader = DataLoader(valset, batch_size=conf.batch_size, shuffle=False, num_workers=conf.num_workers)
-
-    elif conf.dataset == 'DISFA':
-        valset = DISFA(conf.dataset_path, train=False, fold=conf.fold, transform=image_test(crop_size=conf.crop_size), stage = 2)
-        val_loader = DataLoader(valset, batch_size=conf.batch_size, shuffle=False, num_workers=conf.num_workers)
-
+    valset = MTL_Dataset(conf.dataset_path, train=False, transform=image_test(img_size=conf.img_size))
+    val_loader = DataLoader(valset, batch_size=conf.batch_size, shuffle=False, num_workers=conf.num_workers)
     return val_loader, len(valset)
 
 
@@ -42,14 +36,8 @@ def val(net, val_loader):
 
 
 def main(conf):
-    if conf.dataset == 'BP4D':
-        dataset_info = BP4D_infolist
-    elif conf.dataset == 'DISFA':
-        dataset_info = DISFA_infolist
-
     # data
-    val_loader, val_data_num = get_dataloader(conf)
-    logging.info("Fold: [{} | {}  val_data_num: {} ]".format(conf.fold, conf.N_fold, val_data_num))
+    val_loader, _ = get_dataloader(conf)
     net = MEFARG(num_classes=conf.num_classes, backbone=conf.arc)
 
     # resume
@@ -68,16 +56,12 @@ def main(conf):
     logging.info(infostr)
     infostr = {'F1-score-list:'}
     logging.info(infostr)
-    infostr = dataset_info(val_f1_score)
+    infostr = infolist(val_f1_score)
     logging.info(infostr)
     infostr = {'Acc-list:'}
     logging.info(infostr)
-    infostr = dataset_info(val_acc)
+    infostr = infolist(val_acc)
     logging.info(infostr)
-
-
-
-# ---------------------------------------------------------------------------------
 
 
 if __name__=="__main__":

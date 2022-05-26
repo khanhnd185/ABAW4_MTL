@@ -70,16 +70,11 @@ def val(net, val_loader, criterion):
 
 
 def main(conf):
-    if conf.dataset == 'BP4D':
-        dataset_info = BP4D_infolist
-    elif conf.dataset == 'DISFA':
-        dataset_info = DISFA_infolist
-
     start_epoch = 0
     # data
     train_loader,val_loader,train_data_num,val_data_num = get_dataloader(conf)
-    train_weight = torch.from_numpy(np.loadtxt(os.path.join(conf.dataset_path, 'list', conf.dataset+'_weight_fold'+str(conf.fold)+'.txt')))
-    logging.info("Fold: [{} | {}  val_data_num: {} ]".format(conf.fold + 1, conf.N_fold, val_data_num))
+    train_weight = torch.from_numpy(np.loadtxt(os.path.join('train_weight.txt')))
+
     net = MEFARG(num_classes=conf.num_classes, backbone=conf.arc)
 
     # resume
@@ -108,11 +103,11 @@ def main(conf):
         logging.info(infostr)
         infostr = {'F1-score-list:'}
         logging.info(infostr)
-        infostr = dataset_info(val_f1_score)
+        infostr = infolist(val_f1_score)
         logging.info(infostr)
         infostr = {'Acc-list:'}
         logging.info(infostr)
-        infostr = dataset_info(val_acc)
+        infostr = infolist(val_acc)
         logging.info(infostr)
 
         # save checkpoints
@@ -122,14 +117,14 @@ def main(conf):
                 'state_dict': net.state_dict(),
                 'optimizer': optimizer.state_dict(),
             }
-            torch.save(checkpoint, os.path.join(conf['outdir'], 'epoch' + str(epoch + 1) + '_model_fold' + str(conf.fold + 1) + '.pth'))
+            torch.save(checkpoint, os.path.join(conf['outdir'], 'epoch' + str(epoch + 1) + '.pth'))
 
         checkpoint = {
             'epoch': epoch,
             'state_dict': net.state_dict(),
             'optimizer': optimizer.state_dict(),
         }
-        torch.save(checkpoint, os.path.join(conf['outdir'], 'cur_model_fold' + str(conf.fold + 1) + '.pth'))
+        torch.save(checkpoint, os.path.join(conf['outdir'], 'cur_model.pth'))
 
 
 # ---------------------------------------------------------------------------------

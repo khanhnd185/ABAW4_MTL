@@ -1,1 +1,2 @@
-d:\Python\Python310\python.exe train_stage1.py --arc resnet50 -b 64 -lr 0.0001 -j 0 -c 12 -n 4
+d:\Python\Python310\python.exe train_stage1.py --arc resnet50 --exp-name resnet50_first_stage -b 64 -lr 0.0001 -j 0 -c 12 -n 4
+d:\Python\Python310\python.exe train_stage2.py --arc resnet50 --exp-name resnet50_second_stage  --resume results/resnet50_first_stage/bs_64_seed_0_lr_0.0001/cur_model.pth --lam 0.05
