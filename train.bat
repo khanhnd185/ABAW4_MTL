@@ -1,0 +1,1 @@
+d:\Python\Python310\python.exe train_stage1.py --arc resnet50 -b 64 -lr 0.0001 -j 0 -c 12 -n 4
