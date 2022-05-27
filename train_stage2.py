@@ -15,9 +15,9 @@ from conf import get_config,set_logger,set_outdir,set_env
 
 def get_dataloader(conf):
     print('==> Preparing data...')
-    trainset = MTL_Dataset(conf.dataset_path, train=True, transform=image_train(crop_size=conf.img_size))
+    trainset = MTL_Dataset(conf.dataset_path, train=True, transform=image_train(img_size=conf.img_size))
     train_loader = DataLoader(trainset, batch_size=conf.batch_size, shuffle=True, num_workers=conf.num_workers)
-    valset = MTL_Dataset(conf.dataset_path, train=False, transform=image_test(crop_size=conf.img_size))
+    valset = MTL_Dataset(conf.dataset_path, train=False, transform=image_test(img_size=conf.img_size))
     val_loader = DataLoader(valset, batch_size=conf.batch_size, shuffle=False, num_workers=conf.num_workers)
 
     return train_loader, val_loader, len(trainset), len(valset)
@@ -54,7 +54,7 @@ def val(net, val_loader, criterion):
     losses = AverageMeter()
     net.eval()
     statistics_list = None
-    for batch_idx, (inputs, targets) in enumerate(tqdm(val_loader)):
+    for batch_idx, (inputs,  _, _, targets) in enumerate(tqdm(val_loader)):
         targets = targets.float()
         with torch.no_grad():
             if torch.cuda.is_available():
